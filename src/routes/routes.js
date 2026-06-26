@@ -11,6 +11,8 @@ router.get('/users', UserController.getAll)
 
 router.get('/users/:id', UserController.getById)
 
+router.post('/users/email', UserController.getByEmail)
+
 router.post('/users', UserController.create)
 
 export default router;

@@ -20,8 +20,16 @@ async function getById(req,res){
     responseHttp(retorno,res);
 }
 
+async function getByEmail(req,res){
+    const {email} = req.body;
+    const retorno = await UserService.getByEmail(email);
+    responseHttp(retorno,res);
+}
+
+
 export default {
     getAll,
     getById,
     create,
+    getByEmail,
 }

@@ -12,8 +12,17 @@ async function create(body){
     return await User.create(body)
 }
 
+async function getByEmail(email){
+    return await User.findOne({
+        where: {
+            email: email,
+        }
+    })
+}
+
 export default {
     getAll,
     getById,
     create,
+    getByEmail,
 }

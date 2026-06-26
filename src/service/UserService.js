@@ -16,9 +16,14 @@ async function create(body){
     return await UserRepository.create(hashedBody)
 }
 
+async function getByEmail(email){
+    return await UserRepository.getByEmail(email);
+}
+
 
 export default {
     getAll,
     getById,
     create,
+    getByEmail,
 }
