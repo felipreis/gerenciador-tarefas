@@ -16,6 +16,13 @@ async function login(email,senha){
     
 }
 
+async function me(id){
+    return await UserRepository.getById(id);
+}
+
+
+
 export default {
     login,
+    me,
 }
