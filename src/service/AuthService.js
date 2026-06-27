@@ -1,5 +1,7 @@
 import UserRepository from "../repositoires/UserRepository.js";
 import bcrypt from "bcryptjs";
+import 'dotenv/config'
+import jwt from 'jsonwebtoken'
 
 // função vai checar se existe o usuario, se esta correto as credencias e retornar o token
 async function login(email,senha){
@@ -10,7 +12,7 @@ async function login(email,senha){
 
     if(!isMatch){ throw new Error("Usuário ou senha inválidos.");}
 
-    return user;
+    return jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRES_IN})
     
 }
 
