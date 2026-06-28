@@ -1,8 +1,9 @@
 import  {  DataTypes } from 'sequelize';
 import sequelize from "../config/database.js"
+import User from './User.js';
 
-const User = sequelize.define(
-  'User',
+const Project = sequelize.define(
+  'Project',
   {
     id: {
         type: DataTypes.UUID,
@@ -14,11 +15,7 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    email: {
-      type: DataTypes.STRING,
-      // allowNull defaults to true
-    },
-    password: {
+    description: {
       type: DataTypes.STRING,
       // allowNull defaults to true
     },
@@ -26,4 +23,7 @@ const User = sequelize.define(
 
 );
 
-export default User;
+User.hasMany(Project, { foreignKey: 'userId' });
+Project.belongsTo(User, { foreignKey: 'userId' });
+
+export default Project

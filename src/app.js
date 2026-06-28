@@ -2,6 +2,7 @@ import express from 'express'
 import router from './routes/routes.js';
 import sequelize from './config/database.js'
 import User from './model/User.js'
+import Project from './model/Project.js'
 
 const app = express();
 const PORT = 3000;
@@ -13,7 +14,8 @@ async function startServer(){
     try {
         await sequelize.authenticate();
         console.log('Connection has been established successfully.');
-        User.sync()
+        User.sync();
+        Project.sync();
         console.log("Table User create")
         app.listen(PORT, () => {console.log(`Server online at port ${PORT}`)} )
     } catch (error) {
