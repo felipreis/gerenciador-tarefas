@@ -13,7 +13,10 @@ async function getAllProjects(userId){
 async function getProjectById(userId,projectId){
     
     const project = await ProjectRepository.getProjectById(projectId);
-    if(!project || project.userId !== userId){ throw new Error("Projeto não encontrado"); }
+
+    if(!project){ throw new Error("Projeto não encontrado"); }
+    if(project.userId !== userId){ throw new Error("Não é possível acessar esse projeto"); }
+
     
     return project;
     
@@ -22,7 +25,8 @@ async function getProjectById(userId,projectId){
 async function updateProject(userId,id,body){
     //verificar se o projeto existe e se é do usuário logado
     const project = await ProjectRepository.getProjectById(id);
-    if(!project || project.userId !== userId){ throw new Error("Projeto não encontrado");}
+    if(!project){ throw new Error("Projeto não encontrado"); }
+    if(project.userId !== userId){ throw new Error("Não é possível acessar esse projeto"); }
     
     return await ProjectRepository.updateProject(id,body)
 }
@@ -30,7 +34,8 @@ async function updateProject(userId,id,body){
 async function deleteProjects(userId,id){
     //verificar se o projeto existe e se é do usuario logado antes de excluir
     const project = await ProjectRepository.getProjectById(id);
-    if(!project || project.userId !== userId){ throw new Error("Projeto não encontrado");}
+    if(!project){ throw new Error("Projeto não encontrado"); }
+    if(project.userId !== userId){ throw new Error("Não é possível acessar esse projeto"); }
     
     return await ProjectRepository.deleteProjects(id)
 }

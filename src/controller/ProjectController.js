@@ -32,7 +32,13 @@ async function getProjectById(req,res){
         const retorno = await ProjectService.getProjectById(userId,id);
         responseHttp(retorno, res)
     } catch (error) {
-        return res.status(404).json({ mensagem: error.message });
+        if (error.message === "Projeto não encontrado") {
+            return res.status(404).json({ mensagem: error.message });
+        }
+        if (error.message === "Não é possível acessar esse projeto") {
+            return res.status(403).json({ mensagem: error.message });
+    }
+        return res.status(500).json({ mensagem: error.message });
     }
 
 }
@@ -45,7 +51,13 @@ async function updateProject(req,res){
         const retorno = await ProjectService.updateProject(userId,id,body);
         responseHttp(retorno, res)
     } catch (error) {
-        return res.status(404).json({ mensagem: error.message });
+        if (error.message === "Projeto não encontrado") {
+            return res.status(404).json({ mensagem: error.message });
+        }
+        if (error.message === "Não é possível acessar esse projeto") {
+            return res.status(403).json({ mensagem: error.message });
+    }
+        return res.status(500).json({ mensagem: error.message });    
     }   
 }
 
@@ -56,7 +68,13 @@ async function deleteProjects(req,res){
         const retorno = await ProjectService.deleteProjects(userId,id);
         responseHttp(retorno, res)
     } catch (error) {
-        return res.status(404).json({ mensagem: error.message });
+        if (error.message === "Projeto não encontrado") {
+            return res.status(404).json({ mensagem: error.message });
+        }
+        if (error.message === "Não é possível acessar esse projeto") {
+            return res.status(403).json({ mensagem: error.message });
+    }
+        return res.status(500).json({ mensagem: error.message });    
     }  
 }
 
