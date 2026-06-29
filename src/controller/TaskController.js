@@ -1,0 +1,25 @@
+import TaskService from '../service/TaskService.js'
+import responseHttp from '../httpResponse/response.js';
+
+
+async function create(req,res){
+    try {
+        const body = req.body;
+        const userId   = req.user.id;
+        const retorno = await TaskService.create(body,userId);
+        responseHttp(retorno,res);      
+    } catch (error) {
+        if(error.message === 'Projeto não encontrado'){
+            return res.status(404).json({message: error.message})
+        }
+        if(error.message === 'Não é possível criar tarefa'){
+            return res.status(403).json({message: error.message})
+        }
+        return res.status(500).json({message: error.message})
+    }
+
+}   
+
+export default{
+    create
+}

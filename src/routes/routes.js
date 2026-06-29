@@ -4,6 +4,7 @@ import AuthController from  '../controller/AuthController.js'
 import '../middleware/authToken.js'
 import authToken from '../middleware/authToken.js';
 import ProjectController from '../controller/ProjectController.js';
+import TaskController from '../controller/TaskController.js'
 
 const router = express.Router();
 
@@ -25,6 +26,10 @@ router.get('/projects',authToken,ProjectController.getAllProjects)
 router.get('/projects/:id',authToken,ProjectController.getProjectById)
 router.put('/projects/:id',authToken,ProjectController.updateProject)
 router.delete('/projects/:id',authToken,ProjectController.deleteProjects)
+
+//tasks
+
+router.post('/task',authToken,TaskController.create)
 
 export default router;
 
