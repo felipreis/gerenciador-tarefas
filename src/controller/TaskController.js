@@ -18,8 +18,29 @@ async function create(req,res){
         return res.status(500).json({message: error.message})
     }
 
-}   
+}
+
+async function getAllTask(req,res){
+    try {
+        const userId = req.user.id;
+        const {projectId} = req.params;
+        const retorno = await TaskService.getAllTask(userId,projectId);
+        responseHttp(retorno,res);        
+    } catch (error) {
+        if(error.message === 'Projeto não encontrado'){
+            return res.status(404).json({message: error.message})
+        }
+        if(error.message === 'Não é possível acessar tarefa'){
+            return res.status(403).json({message:error.message})
+        }
+
+        return res.status(500).json({message:error.message})
+    }
+
+}
 
 export default{
-    create
+    create,
+    getAllTask
+
 }

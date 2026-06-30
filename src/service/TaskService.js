@@ -5,9 +5,7 @@ async function create(payload,userId){
 
     //verificar se o projeto existe
     const projectId = payload.projectId;
-    console.log('projectId recebido:', payload.projectId);
     const project = await ProjectRepository.getProjectById(projectId);
-    console.log('projeto encontrado:', project);
 
     if(!project) { throw new Error('Projeto não encontrado')}
 
@@ -18,7 +16,19 @@ async function create(payload,userId){
 
 }
 
+async function getAllTask(userId,projectId){
+
+    //verificar se o projeto referente ao id existe
+    const project = await ProjectRepository.getProjectById(projectId);
+    if(!project){ throw new Error('Projeto não encontrado')}
+
+    //verificar se o usuário pode acessar aquelas tarefas
+    if(project.userId !== userId) { throw new Error('Não é possível acessar tarefa')}
+
+    return await TaskRepository.getAllTask(projectId);
+}
 
 export default{
-    create
+    create,
+    getAllTask
 }
