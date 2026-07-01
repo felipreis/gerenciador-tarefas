@@ -31,6 +31,7 @@ router.delete('/projects/:id',authToken,ProjectController.deleteProjects)
 
 router.post('/task',authToken,TaskController.create)
 router.get('/tasks/:projectId',authToken,TaskController.getAllTask)
+router.get('/tasks/:taskId',authToken,TaskController.getTaskById)
 
 export default router;
 

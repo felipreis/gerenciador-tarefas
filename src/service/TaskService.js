@@ -28,7 +28,23 @@ async function getAllTask(userId,projectId){
     return await TaskRepository.getAllTask(projectId);
 }
 
+async function getTaskById(userId,taskId){
+
+    //
+    const task = await TaskRepository.getTaskById(taskId);
+    if(!task){throw new Error ('Tarefa não encontrada')}
+
+    const project = await ProjectRepository.getProjectById(task.projectId);
+    if(!project){ throw new Error('Projeto não encontrado')}
+
+    //verificar se o usuário pode acessar aquelas tarefas
+    if(project.userId !== userId) { throw new Error('Não é possível acessar tarefa')}
+
+    return task
+}
+
 export default{
     create,
-    getAllTask
+    getAllTask,
+    getTaskById
 }

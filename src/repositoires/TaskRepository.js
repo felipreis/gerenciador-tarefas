@@ -15,6 +15,10 @@ async function getAllTask(projectId){
     })
 }
 
+async function getTaskById(taskId){
+    return await Task.findByPk(taskId);
+}
+
 export default {
     create,
     getAllTask

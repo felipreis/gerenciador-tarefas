@@ -39,8 +39,25 @@ async function getAllTask(req,res){
 
 }
 
-export default{
-    create,
-    getAllTask
+async function getTaskById(req,res){
+    try {
+        const {taskId} = req.params;
+        const userId = req.user.id;
+        const retorno = await TaskService.getTaskById(userId,taskId);
+        responseHttp(retorno,res)
+    } catch (error) {
+        if(error.message === 'Projeto não encontrado' || error.message === 'Tarefa não encontrada'){
+            return res.status(404).json({message: error.message})
+        }
+        if(error.message === 'Não é possível acessar tarefa'){
+            return res.status(403).json({message: error.message})  
+        }
+        return res.status(500).json({message: error.message})
+    }   
+}
 
+export default {
+    create,
+    getAllTask,
+    getTaskById
 }
