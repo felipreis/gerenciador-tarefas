@@ -74,9 +74,28 @@ async function updateTask(req,res){
     }
 }
 
+async function deleteTask(req,res){
+    try {
+        const {taskId} = req.params;
+        const userId = req.user.id;
+        const retorno = await TaskService.delete(userId,taskId);
+        responseHttp(retorno,res);
+    } catch (error) {
+        if(error.message === 'Projeto não encontrado' || error.message === 'Tarefa não encontrada'){
+            return res.status(404).json({message: error.message})
+        }
+        if(error.message === 'Não é possível deletar a tarefa'){
+            return res.status(403).json({message: error.message})  
+        }
+        return res.status(500).json({message: error.message})
+    }
+}
+
+
 export default {
     create,
     getAllTask,
     getTaskById,
-    updateTask
+    updateTask,
+    deleteTask
 }

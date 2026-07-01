@@ -24,10 +24,19 @@ async function updateTask(taskId,payload){
     return Task.update(payload, {where: {id: taskId}})
 }
 
+async function deleteTask(taskId){
+    return await Task.destroy({
+        where:{
+            id:taskId
+        }
+    })
+}
+
 
 export default {
     create,
     getAllTask,
     getTaskById,
-    updateTask
+    updateTask,
+    deleteTask
 }
