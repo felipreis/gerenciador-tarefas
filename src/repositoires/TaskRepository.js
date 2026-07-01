@@ -1,3 +1,4 @@
+import { where } from "sequelize";
 import Task from "../model/Task.js";
 
 async function create(payload){
@@ -19,7 +20,14 @@ async function getTaskById(taskId){
     return await Task.findByPk(taskId);
 }
 
+async function updateTask(taskId,payload){
+    return Task.update(payload, {where: {id: taskId}})
+}
+
+
 export default {
     create,
-    getAllTask
+    getAllTask,
+    getTaskById,
+    updateTask
 }

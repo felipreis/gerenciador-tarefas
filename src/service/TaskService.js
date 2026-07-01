@@ -43,8 +43,23 @@ async function getTaskById(userId,taskId){
     return task
 }
 
+async function updateTask(userId,taskId,payload){
+    // ver se existe a task
+    const task = await TaskRepository.getTaskById(taskId);
+    if(!task){throw new Error('Tarefa não encontrada')}
+
+    //conferir se a task esta no projeto que pertence ao usuario logado
+    const project = await ProjectRepository.getProjectById(task.projectId);
+    if(!project){throw new Error('Projeto não encontrado')}
+
+    if(project.userId !== userId){throw new Error('Não é possível alterar a tarefa')}
+
+    return await TaskRepository.updateTask(taskId,payload);
+}
+
 export default{
     create,
     getAllTask,
-    getTaskById
+    getTaskById,
+    updateTask
 }

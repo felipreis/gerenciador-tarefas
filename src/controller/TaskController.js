@@ -56,8 +56,27 @@ async function getTaskById(req,res){
     }   
 }
 
+async function updateTask(req,res){
+    try {
+        const {taskId} = req.params;
+        const userId = req.user.id;
+        const body = req.body;
+        const retorno = await TaskService.updateTask(userId,taskId,body);
+        responseHttp(retorno,res) 
+    } catch (error) {
+        if(error.message === 'Projeto não encontrado' || error.message === 'Tarefa não encontrada'){
+            return res.status(404).json({message: error.message})
+        }
+        if(error.message === 'Não é possível alterar a tarefa'){
+            return res.status(403).json({message: error.message})  
+        }
+        return res.status(500).json({message: error.message})       
+    }
+}
+
 export default {
     create,
     getAllTask,
-    getTaskById
+    getTaskById,
+    updateTask
 }
