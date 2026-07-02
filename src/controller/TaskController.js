@@ -78,7 +78,7 @@ async function deleteTask(req,res){
     try {
         const {taskId} = req.params;
         const userId = req.user.id;
-        const retorno = await TaskService.delete(userId,taskId);
+        const retorno = await TaskService.deleteTask(userId,taskId);
         responseHttp(retorno,res);
     } catch (error) {
         if(error.message === 'Projeto não encontrado' || error.message === 'Tarefa não encontrada'){

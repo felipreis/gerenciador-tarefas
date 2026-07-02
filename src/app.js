@@ -1,3 +1,4 @@
+
 import express from 'express'
 import router from './routes/routes.js';
 import sequelize from './config/database.js'

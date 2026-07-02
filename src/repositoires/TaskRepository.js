@@ -1,5 +1,7 @@
 import { where } from "sequelize";
 import Task from "../model/Task.js";
+import Project from '../model/Project.js'
+
 
 async function create(payload){
     return await Task.create(payload)

@@ -30,7 +30,7 @@ router.delete('/projects/:id',authToken,ProjectController.deleteProjects)
 //tasks
 
 router.post('/task',authToken,TaskController.create)
-router.get('/tasks/:projectId',authToken,TaskController.getAllTask)
+router.get('/tasks/project/:projectId',authToken,TaskController.getAllTask)
 router.get('/tasks/:taskId',authToken,TaskController.getTaskById)
 router.put('/tasks/:taskId',authToken,TaskController.updateTask)
 router.delete('/tasks/:taskId',authToken,TaskController.deleteTask)
