@@ -32,8 +32,9 @@ const __dirname = dirname(__filename);
         },
     },
        },
-       apis: [join(__dirname, '../routes/*.js')], 
+       apis: [join(__dirname, '../routes/routes.js')],
    };
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
+
 export default swaggerSpec;
