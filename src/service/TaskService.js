@@ -1,5 +1,6 @@
 import TaskRepository from '../repositoires/TaskRepository.js'
 import ProjectRepository from '../repositoires/ProjectRepository.js';
+import { Op } from 'sequelize';
 
 async function create(payload,userId){
 
@@ -16,7 +17,12 @@ async function create(payload,userId){
 
 }
 
-async function getAllTask(userId,projectId){
+async function getAllTask(userId,projectId,filters){
+
+    const where = {};
+    if(filters.status){ where.status = filters.status};
+    if(filters.priority){ where.priority = filters.priority};
+    if(filters.search){ where.title = { [Op.iLike]: `%${filters.search}%` }}
 
     //verificar se o projeto referente ao id existe
     const project = await ProjectRepository.getProjectById(projectId);
@@ -25,7 +31,7 @@ async function getAllTask(userId,projectId){
     //verificar se o usuário pode acessar aquelas tarefas
     if(project.userId !== userId) { throw new Error('Não é possível acessar tarefa')}
 
-    return await TaskRepository.getAllTask(projectId);
+    return await TaskRepository.getAllTask(projectId,where);
 }
 
 async function getTaskById(userId,taskId){

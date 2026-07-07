@@ -7,7 +7,7 @@ async function create(payload){
     return await Task.create(payload)
 }
 
-async function getAllTask(projectId){
+async function getAllTask(projectId,where){
     return await Task.findAll({
             include: [{
         model: Project,
