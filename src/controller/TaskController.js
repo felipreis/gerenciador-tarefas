@@ -24,8 +24,8 @@ async function getAllTask(req,res){
     try {
         const userId = req.user.id;
         const {projectId} = req.params;
-        const { status, priority, search } = req.query;
-        const retorno = await TaskService.getAllTask(userId,projectId,{ status, priority, search });
+        const { status, priority, search, page, limit } = req.query;
+        const retorno = await TaskService.getAllTask(userId,projectId,{ status, priority, search, page, limit });
         responseHttp(retorno,res);        
     } catch (error) {
         if(error.message === 'Projeto não encontrado'){

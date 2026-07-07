@@ -7,8 +7,11 @@ async function create(payload){
     return await Task.create(payload)
 }
 
-async function getAllTask(projectId,where){
-    return await Task.findAll({
+async function getAllTask(projectId,where,limit,offset){
+    return await Task.findAndCountAll({
+            where: where,
+            limit:limit,
+            offset:offset,
             include: [{
         model: Project,
         where: { 

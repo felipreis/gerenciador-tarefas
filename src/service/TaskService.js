@@ -19,6 +19,9 @@ async function create(payload,userId){
 
 async function getAllTask(userId,projectId,filters){
 
+    const page = Number(filters.page) || 1
+    const limit = Number(filters.limit) || 10
+    const offset = (page - 1) * limit
     const where = {};
     if(filters.status){ where.status = filters.status};
     if(filters.priority){ where.priority = filters.priority};
@@ -31,7 +34,14 @@ async function getAllTask(userId,projectId,filters){
     //verificar se o usuário pode acessar aquelas tarefas
     if(project.userId !== userId) { throw new Error('Não é possível acessar tarefa')}
 
-    return await TaskRepository.getAllTask(projectId,where);
+    const resultado = await TaskRepository.getAllTask(projectId,where,limit,offset);
+
+    return {
+    page,
+    limit,
+    total: resultado.count,
+    data: resultado.rows
+    }
 }
 
 async function getTaskById(userId,taskId){
