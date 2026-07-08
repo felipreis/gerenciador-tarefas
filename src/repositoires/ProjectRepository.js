@@ -28,10 +28,15 @@ async function deleteProjects(id){
     })
 }
 
+async function countByUser(userId) {
+    return await Project.count({ where: { userId } })
+}
+
 export default {
     create,
     getAllProjects,
     getProjectById,
     updateProject,
-    deleteProjects
+    deleteProjects,
+    countByUser
 }

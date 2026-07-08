@@ -37,11 +37,35 @@ async function deleteTask(taskId){
     })
 }
 
+async function countByUser(userId) {
+    return await Task.count({   include: [{
+        model: Project,
+        where: { 
+            userId: userId    
+        }
+    }] })
+}
+
+async function countByStatus(userId,status) {
+    return await Task.count({ 
+        where: {
+            status:status
+        },  
+        include: [{
+        model: Project,
+        where: { 
+            userId: userId    
+        }
+    }] })
+}
+
 
 export default {
     create,
     getAllTask,
     getTaskById,
     updateTask,
-    deleteTask
+    deleteTask,
+    countByUser,
+    countByStatus
 }
