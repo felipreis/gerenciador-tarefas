@@ -496,6 +496,20 @@ router.put('/tasks/:taskId', authToken, TaskController.updateTask)
  */
 router.delete('/tasks/:taskId', authToken, TaskController.deleteTask)
 
+/**
+ * @swagger
+ * /dashboard:
+ *   get:
+ *     summary: informações para dashboard
+ *     tags: [???]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: ???
+ *       401:
+ *         description: ???
+ */
 router.get('/dashboard',authToken, DashboardController.dashView)
 
 export default router;
