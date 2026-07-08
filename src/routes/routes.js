@@ -4,6 +4,7 @@ import AuthController from  '../controller/AuthController.js'
 import authToken from '../middleware/authToken.js';
 import ProjectController from '../controller/ProjectController.js';
 import TaskController from '../controller/TaskController.js'
+import DashboardController from '../controller/DashboardController.js';
 
 const router = express.Router();
 
@@ -494,5 +495,7 @@ router.put('/tasks/:taskId', authToken, TaskController.updateTask)
  *         description: Token inválido ou ausente
  */
 router.delete('/tasks/:taskId', authToken, TaskController.deleteTask)
+
+router.get('/dashboard',authToken, DashboardController.dashView)
 
 export default router;
