@@ -501,14 +501,14 @@ router.delete('/tasks/:taskId', authToken, TaskController.deleteTask)
  * /dashboard:
  *   get:
  *     summary: informações para dashboard
- *     tags: [???]
+ *     tags: [Dash]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: ???
- *       401:
- *         description: ???
+ *         description: Dados para dashboard encontrados
+ *       500:
+ *         description: Problema no servidor
  */
 router.get('/dashboard',authToken, DashboardController.dashView)
 
