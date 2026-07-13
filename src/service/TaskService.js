@@ -48,10 +48,10 @@ async function getTaskById(userId,taskId){
 
     //
     const task = await TaskRepository.getTaskById(taskId);
-    console.log('task:', task)
-    
-    if(!task){throw new Error ('Tarefa não encontrada')}
-    console.log('task.projectId:', task?.projectId)
+    console.log('task:', task);
+    if(!task){throw new Error ('Tarefa não encontrada')};
+    console.log('task.projectId:', task?.projectId);
+
     const project = await ProjectRepository.getProjectById(task.projectId);
     if(!project){ throw new Error('Projeto não encontrado')}
 
