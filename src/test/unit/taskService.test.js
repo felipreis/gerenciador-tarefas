@@ -1,4 +1,5 @@
 import { describe, expect, jest } from '@jest/globals';
+import { Op } from 'sequelize';
 
 jest.unstable_mockModule('../../repositoires/TaskRepository.js', () => ({
     default: {
@@ -565,5 +566,268 @@ describe('TaskService.deleteTask', () => {
         expect(ProjectRepository.getProjectById).toHaveBeenCalledWith(1)
 
     })
+
+})
+
+/*
+TaskService.getAllTask
+├── retorna lista vazia
+├── retorna tarefas com paginação
+├── aplica filtro status
+├── aplica filtro priority
+├── aplica filtro search
+└── propaga erro do repository
+*/
+
+describe('TaskService.getAllTask', () => {
+
+    it('Projeto não encontrado', async () => {
+
+        ProjectRepository.getProjectById.mockResolvedValue(null);
+
+        await expect(TaskService.getAllTask(1,1,{})).rejects.toThrow('Projeto não encontrado');
+
+        expect(ProjectRepository.getProjectById).toHaveBeenCalledWith(1)
+
+        expect(TaskRepository.getAllTask).not.toHaveBeenCalled()
+
+    })
+
+    it('Projeto pertence a outro usuário', async () => {
+
+        ProjectRepository.getProjectById.mockResolvedValue({
+            projectId:1,
+            name:"Projeto 01",
+            description: "projeto 01 teste jest",
+            userId: 2
+        });
+
+        await expect(TaskService.getAllTask(1,1,{})).rejects.toThrow('Não é possível acessar tarefa');
+
+        expect(ProjectRepository.getProjectById).toHaveBeenCalledWith(1)
+
+        expect(TaskRepository.getAllTask).not.toHaveBeenCalled();
+
+    })
+
+    it('Retorna lista vazia', async () => {
+
+        TaskRepository.getAllTask.mockResolvedValue({
+            count: 0,
+            rows: []
+        });
+
+        ProjectRepository.getProjectById.mockResolvedValue({
+            projectId:1,
+            name:"Projeto 01",
+            description: "projeto 01 teste jest",
+            userId: 1
+        });
+
+        const result = await TaskService.getAllTask(1,1,{page: 1, limit: 10,})
+
+        expect(result).toEqual({
+            page: 1,
+            limit: 10,
+            total: 0,
+            data: []
+        });
+
+        expect(ProjectRepository.getProjectById).toHaveBeenCalledWith(1)
+
+        expect(TaskRepository.getAllTask).toHaveBeenCalled();
+
+    })
+
+    it('Filtros: status', async () => {
+
+        TaskRepository.getAllTask.mockResolvedValue({
+            count: 0,
+            rows: []
+        });
+
+        ProjectRepository.getProjectById.mockResolvedValue({
+            projectId:1,
+            name:"Projeto 01",
+            description: "projeto 01 teste jest",
+            userId: 1
+        });
+
+        const result = await TaskService.getAllTask(1,1,{
+            status:"pending"
+        });
+
+        expect(result).toEqual({
+            page: 1,
+            limit: 10,
+            total: 0,
+            data: []
+        });
+
+        expect(ProjectRepository.getProjectById).toHaveBeenCalledWith(1)
+
+        expect(TaskRepository.getAllTask).toHaveBeenCalledWith(
+            1,
+            {
+                status:"pending"
+            },
+            10,
+            0
+        );
+
+    })
+
+    it('Filtros: priority', async () => {
+
+        TaskRepository.getAllTask.mockResolvedValue({
+            count: 0,
+            rows: []
+        });
+
+        ProjectRepository.getProjectById.mockResolvedValue({
+            projectId:1,
+            name:"Projeto 01",
+            description: "projeto 01 teste jest",
+            userId: 1
+        });
+
+        const result = await TaskService.getAllTask(1,1,{
+            priority:"high"
+        });
+
+        expect(result).toEqual({
+            page: 1,
+            limit: 10,
+            total: 0,
+            data: []
+        });
+
+        expect(ProjectRepository.getProjectById).toHaveBeenCalledWith(1)
+
+        expect(TaskRepository.getAllTask).toHaveBeenCalledWith(
+            1,
+            {
+                priority:"high"
+            },
+            10,
+            0
+        );
+
+    })
+
+    it('Filtros: search', async () => {
+
+        TaskRepository.getAllTask.mockResolvedValue({
+            count: 0,
+            rows: []
+        });
+
+        ProjectRepository.getProjectById.mockResolvedValue({
+            projectId:1,
+            name:"Projeto 01",
+            description: "projeto 01 teste jest",
+            userId: 1
+        });
+
+        const result = await TaskService.getAllTask(1,1,{
+                search: "task"
+        });
+
+        expect(result).toEqual({
+            page: 1,
+            limit: 10,
+            total: 0,
+            data: []
+        });
+
+        expect(ProjectRepository.getProjectById).toHaveBeenCalledWith(1)
+
+        expect(TaskRepository.getAllTask)
+        .toHaveBeenCalledWith(
+            1,
+            {
+                title:{
+                    [Op.iLike]:"%task%"
+                }
+            },
+            10,
+            0
+        );
+
+    })
+    
+    it('Todos os Filtros', async () => {
+
+        TaskRepository.getAllTask.mockResolvedValue({
+            count: 0,
+            rows: []
+        });
+
+        ProjectRepository.getProjectById.mockResolvedValue({
+            projectId:1,
+            name:"Projeto 01",
+            description: "projeto 01 teste jest",
+            userId: 1
+        });
+
+        const result = await TaskService.getAllTask(1,1,{
+            status:"pending",
+            priority:"high",
+            search:"api"
+        });
+
+        expect(result).toEqual({
+            page: 1,
+            limit: 10,
+            total: 0,
+            data: []
+        });
+
+        expect(ProjectRepository.getProjectById).toHaveBeenCalledWith(1)
+
+        expect(TaskRepository.getAllTask)
+        .toHaveBeenCalledWith(
+            1,
+            {
+                status:"pending",
+                priority:"high",
+                title:{
+                    [Op.iLike]:"%api%"
+                }
+            },
+            10,
+            0
+        );
+
+    })
+
+    it('Erro do repository', async () => {
+
+        TaskRepository.getAllTask.mockRejectedValue(
+            new Error("Erro ao buscar tarefas")
+        );
+
+        ProjectRepository.getProjectById.mockResolvedValue({
+            projectId:1,
+            name:"Projeto 01",
+            description: "projeto 01 teste jest",
+            userId: 1
+        });
+
+        await expect(TaskService.getAllTask(1,1,{})).rejects.toThrow("Erro ao buscar tarefas");
+
+        expect(ProjectRepository.getProjectById).toHaveBeenCalledWith(1)
+
+        expect(TaskRepository.getAllTask).toHaveBeenCalledWith(
+            1,
+            {},
+            10,
+            0
+        );
+
+    })
+
+
+    
 
 })
