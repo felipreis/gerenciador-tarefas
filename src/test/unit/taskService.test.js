@@ -160,15 +160,6 @@ describe('TaskService.create', ()  => {
 
 })
 
-/*
-TaskService.getTaskById
-
-├── projeto não encontrado
-├── projeto pertence a outro usuário
-├── retorna tarefa
-└── propaga erro
-*/
-
 describe('TaskService.getTaskById', () => {
 
     it('tarefa não encontrada', async () => {
@@ -282,6 +273,296 @@ describe('TaskService.getTaskById', () => {
         expect(TaskRepository.getTaskById).toHaveBeenCalledWith(1)
 
         expect(ProjectRepository.getProjectById).not.toHaveBeenCalled()
+
+    })
+
+})
+
+
+/*
+
+├── atualiza tarefa
+└── erro do repository
+ */
+
+describe('TaskService.updateTask', () => {
+
+    it('tarefa não encontrada', async () => {
+
+        TaskRepository.getTaskById.mockResolvedValue(null);
+
+        await expect(TaskService.updateTask(1,2,{status: "complete"})).rejects.toThrow('Tarefa não encontrada');
+
+        expect(ProjectRepository.getProjectById).not.toHaveBeenCalled()
+
+        expect(TaskRepository.updateTask).not.toHaveBeenCalled()
+
+    })
+
+    it('Projeto não encontrado', async () => {
+
+        TaskRepository.getTaskById.mockResolvedValue({
+            id:1,
+            projectId:1,
+            title:"task",
+            description: "d task",
+            status: "pending",
+            priority: "low",
+            dueDate: "01/01/01",
+            userId:1
+        });
+
+        ProjectRepository.getProjectById.mockResolvedValue(null);
+
+        await expect(TaskService.updateTask(1,1,{status: "complete"})).rejects.toThrow('Projeto não encontrado');
+
+        expect(ProjectRepository.getProjectById).toHaveBeenCalledWith(1)
+
+        expect(TaskRepository.updateTask).not.toHaveBeenCalledWith()
+
+    })
+
+    it('Projeto pertence a outro usuário', async () => {
+
+        TaskRepository.getTaskById.mockResolvedValue({
+            id:1,
+            projectId:1,
+            title:"task",
+            description: "d task",
+            status: "pending",
+            priority: "low",
+            dueDate: "01/01/01",
+            userId:1
+        });
+
+        ProjectRepository.getProjectById.mockResolvedValue({
+            projectId:1,
+            name:"Projeto 01",
+            description: "projeto 01 teste jest",
+            userId: 2
+        });
+
+        await expect(TaskService.updateTask(1,1,{status: "complete"})).rejects.toThrow('Não é possível alterar a tarefa');
+
+        expect(TaskRepository.getTaskById).toHaveBeenCalledWith(1)
+
+        expect(ProjectRepository.getProjectById).toHaveBeenCalledWith(1)
+
+    })
+
+    it('Atualiza tarefa', async () => {
+
+        TaskRepository.getTaskById.mockResolvedValue({
+            id:1,
+            projectId:1,
+            title:"task",
+            description: "d task",
+            status: "pending",
+            priority: "low",
+            dueDate: "01/01/01",
+            userId:1
+        });
+
+        ProjectRepository.getProjectById.mockResolvedValue({
+            projectId:1,
+            name:"Projeto 01",
+            description: "projeto 01 teste jest",
+            userId: 1
+        });
+
+        TaskRepository.updateTask.mockResolvedValue({
+            id:1,
+            projectId:1,
+            title:"task",
+            description: "d task",
+            status: "completed",
+            priority: "low",
+            dueDate: "01/01/01",
+            userId:1
+        })
+
+        const task = await TaskService.updateTask(1,1,{status: "completed"})
+
+        expect(task).toEqual({
+            id:1,
+            projectId:1,
+            title:"task",
+            description: "d task",
+            status: "completed",
+            priority: "low",
+            dueDate: "01/01/01",
+            userId:1
+        });
+
+        expect(TaskRepository.getTaskById).toHaveBeenCalledWith(1)
+
+        expect(ProjectRepository.getProjectById).toHaveBeenCalledWith(1)
+
+    })
+
+    it('propaga erro do repository', async () => {
+
+        TaskRepository.getTaskById.mockResolvedValue({
+            id:1,
+            projectId:1,
+            title:"task",
+            description: "d task",
+            status: "pending",
+            priority: "low",
+            dueDate: "01/01/01",
+            userId:1
+        });
+
+        ProjectRepository.getProjectById.mockResolvedValue({
+            projectId:1,
+            name:"Projeto 01",
+            description: "projeto 01 teste jest",
+            userId: 1
+        });
+
+        TaskRepository.updateTask.mockRejectedValue(new Error ('Não foi possível alterar tarefa'));
+
+        await expect(TaskService.updateTask(1,1,{status: "complete"})).rejects.toThrow('Não foi possível alterar tarefa');
+
+        expect(TaskRepository.getTaskById).toHaveBeenCalledWith(1)
+
+        expect(ProjectRepository.getProjectById).toHaveBeenCalledWith(1)
+
+    })
+
+})
+
+/**TaskService.deleteTask
+├── tarefa não encontrada
+├── projeto não encontrado
+├── projeto pertence a outro usuário
+├── exclui tarefa
+└── erro do repository */
+
+describe('TaskService.deleteTask', () => {
+
+    it('tarefa não encontrada', async () => {
+
+        TaskRepository.getTaskById.mockResolvedValue(null);
+
+        await expect(TaskService.deleteTask(1,2)).rejects.toThrow('Tarefa não encontrada');
+
+        expect(ProjectRepository.getProjectById).not.toHaveBeenCalled()
+
+        expect(TaskRepository.deleteTask).not.toHaveBeenCalled()
+
+    })
+
+    it('Projeto não encontrado', async () => {
+
+        TaskRepository.getTaskById.mockResolvedValue({
+            id:1,
+            projectId:1,
+            title:"task",
+            description: "d task",
+            status: "pending",
+            priority: "low",
+            dueDate: "01/01/01",
+            userId:1
+        });
+
+        ProjectRepository.getProjectById.mockResolvedValue(null);
+
+        await expect(TaskService.deleteTask(1,1)).rejects.toThrow('Projeto não encontrado');
+
+        expect(ProjectRepository.getProjectById).toHaveBeenCalledWith(1)
+
+        expect(TaskRepository.deleteTask).not.toHaveBeenCalledWith()
+
+    })
+
+    it('Projeto pertence a outro usuário', async () => {
+
+        TaskRepository.getTaskById.mockResolvedValue({
+            id:1,
+            projectId:1,
+            title:"task",
+            description: "d task",
+            status: "pending",
+            priority: "low",
+            dueDate: "01/01/01",
+            userId:1
+        });
+
+        ProjectRepository.getProjectById.mockResolvedValue({
+            projectId:1,
+            name:"Projeto 01",
+            description: "projeto 01 teste jest",
+            userId: 2
+        });
+
+        await expect(TaskService.deleteTask(1,1)).rejects.toThrow('Não é possível deletar a tarefa');
+
+        expect(TaskRepository.getTaskById).toHaveBeenCalledWith(1)
+
+        expect(ProjectRepository.getProjectById).toHaveBeenCalledWith(1)
+
+    })
+
+    it('Exclui tarefa', async () => {
+
+        TaskRepository.getTaskById.mockResolvedValue({
+            id:1,
+            projectId:1,
+            title:"task",
+            description: "d task",
+            status: "pending",
+            priority: "low",
+            dueDate: "01/01/01",
+            userId:1
+        });
+
+        ProjectRepository.getProjectById.mockResolvedValue({
+            projectId:1,
+            name:"Projeto 01",
+            description: "projeto 01 teste jest",
+            userId: 1
+        });
+
+        TaskRepository.deleteTask.mockResolvedValue("Tarefa deletada")
+
+        const deletedTask = await TaskService.deleteTask(1,1)
+
+        expect(deletedTask).toBe("Tarefa deletada");
+
+        expect(TaskRepository.getTaskById).toHaveBeenCalledWith(1)
+
+        expect(ProjectRepository.getProjectById).toHaveBeenCalledWith(1)
+
+    })
+
+    it('propaga erro do repository', async () => {
+
+        TaskRepository.getTaskById.mockResolvedValue({
+            id:1,
+            projectId:1,
+            title:"task",
+            description: "d task",
+            status: "pending",
+            priority: "low",
+            dueDate: "01/01/01",
+            userId:1
+        });
+
+        ProjectRepository.getProjectById.mockResolvedValue({
+            projectId:1,
+            name:"Projeto 01",
+            description: "projeto 01 teste jest",
+            userId: 1
+        });
+
+        TaskRepository.deleteTask.mockRejectedValue(new Error ('Não foi possível deletar a tarefa'));
+
+        await expect(TaskService.deleteTask(1,1)).rejects.toThrow('Não foi possível deletar a tarefa');
+
+        expect(TaskRepository.getTaskById).toHaveBeenCalledWith(1)
+
+        expect(ProjectRepository.getProjectById).toHaveBeenCalledWith(1)
 
     })
 
