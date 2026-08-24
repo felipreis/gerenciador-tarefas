@@ -88,6 +88,10 @@ async function deleteTask(userId,taskId){
     return await TaskRepository.deleteTask(taskId);
 } 
 
+async function getWeekView(userId, referenceDate) {
+    
+}
+
 
 export default{
     create,
