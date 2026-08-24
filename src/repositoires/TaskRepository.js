@@ -1,6 +1,6 @@
-import { where } from "sequelize";
 import Task from "../model/Task.js";
 import Project from '../model/Project.js'
+import { Op } from 'sequelize';
 
 
 async function create(payload){
@@ -59,6 +59,22 @@ async function countByStatus(userId,status) {
     }] })
 }
 
+async function getByDateRange(userId, startDate, endDate){
+    return await Task.findAll({
+        where: {
+            dueDate:{
+                [Op.between]: [startDate, endDate]
+            }
+        },
+        include: [{
+            model:Project,
+            where: {
+                userId:userId
+            }
+        }]
+    })
+}
+
 
 export default {
     create,
@@ -67,5 +83,6 @@ export default {
     updateTask,
     deleteTask,
     countByUser,
-    countByStatus
+    countByStatus,
+    getByDateRange
 }
