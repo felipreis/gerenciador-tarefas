@@ -92,11 +92,25 @@ async function deleteTask(req,res){
     }
 }
 
+async function getWeekView(req,res){
+    try {
+        const {date} = req.query;
+        const userId = req.user.id;
+        const retorno = await TaskService.getWeekView(userId,date)
+        responseHttp(retorno,res)
+    } catch (error) {
+        
+        return res.status(500).json({message:error.message})
+        
+    }
+}
+
 
 export default {
     create,
     getAllTask,
     getTaskById,
     updateTask,
-    deleteTask
+    deleteTask,
+    getWeekView
 }

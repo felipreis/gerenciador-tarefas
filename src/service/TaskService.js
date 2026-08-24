@@ -1,6 +1,7 @@
 import TaskRepository from '../repositoires/TaskRepository.js'
 import ProjectRepository from '../repositoires/ProjectRepository.js';
 import { Op } from 'sequelize';
+import WeekUtils from '../utils/WeekUtils.js';
 
 async function create(payload,userId){
 
@@ -89,7 +90,16 @@ async function deleteTask(userId,taskId){
 } 
 
 async function getWeekView(userId, referenceDate) {
-    
+    //calcula o inicio e o fim da semana a partir de uma data de referencia e chama o getByDateRange do repository
+    if(!referenceDate){
+        referenceDate = new Date();
+    }
+
+    const inicio = WeekUtils.getStartOfWeek(referenceDate);
+    const fim = WeekUtils.getEndOfWeek(referenceDate);
+
+    return await TaskRepository.getByDateRange(userId,inicio,fim)
+
 }
 
 
@@ -98,5 +108,6 @@ export default{
     getAllTask,
     getTaskById,
     updateTask,
-    deleteTask
+    deleteTask,
+    getWeekView
 }

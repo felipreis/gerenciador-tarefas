@@ -390,6 +390,8 @@ router.post('/tasks', authToken, TaskController.create)
  */
 router.get('/tasks/project/:projectId', authToken, TaskController.getAllTask)
 
+router.get('/tasks/week',authToken, TaskController.getWeekView)
+
 /**
  * @swagger
  * /tasks/{taskId}:
@@ -511,5 +513,8 @@ router.delete('/tasks/:taskId', authToken, TaskController.deleteTask)
  *         description: Problema no servidor
  */
 router.get('/dashboard',authToken, DashboardController.dashView)
+
+
+
 
 export default router;
