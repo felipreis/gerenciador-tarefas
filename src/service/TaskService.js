@@ -98,7 +98,24 @@ async function getWeekView(userId, referenceDate) {
     const inicio = WeekUtils.getStartOfWeek(referenceDate);
     const fim = WeekUtils.getEndOfWeek(referenceDate);
 
-    return await TaskRepository.getByDateRange(userId,inicio,fim)
+    const tarefas = await TaskRepository.getByDateRange(userId,inicio,fim)
+
+    // 1 - array de nomes da semana na ordem que o getDay devolve
+    const nomeDias = ["domingo","segunda","terça","quarta","quinta","sexta","sábado"];
+
+    //objeto de resultado
+    const semana = {};
+    nomeDias.forEach(nome => {
+        semana[nome] = [];
+    })
+
+    tarefas.forEach(tarefa => {
+        const indiceDia = tarefa.dueDate.getDay();
+        const nomeDia = nomeDias[indiceDia];
+        semana[nomeDia].push(tarefa);
+    })
+
+    return semana;
 
 }
 
@@ -111,3 +128,5 @@ export default{
     deleteTask,
     getWeekView
 }
+
+
