@@ -75,6 +75,23 @@ async function getByDateRange(userId, startDate, endDate){
     })
 }
 
+async function countByStatusAndDateRange(userId,status, startDate, endDate){
+    return await Task.count({
+        where: {
+            dueDate:{
+                [Op.between]: [startDate, endDate]
+            },
+            status: status
+        },
+        include: [{
+            model:Project,
+            where: {
+                userId:userId
+            }
+        }]
+    })
+}
+
 
 export default {
     create,
@@ -84,5 +101,6 @@ export default {
     deleteTask,
     countByUser,
     countByStatus,
-    getByDateRange
+    getByDateRange,
+    countByStatusAndDateRange
 }
