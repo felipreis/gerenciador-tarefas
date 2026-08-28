@@ -31,7 +31,24 @@ const Task = sequelize.define(
         dueDate:{
             type:DataTypes.DATE,
             allowNull:false,
-        }
+        },
+        order: {
+            type: DataTypes.FLOAT,
+            allowNull: false,
+            defaultValue: 0,
+        },
+    },
+    {
+        hooks: {
+            beforeCreate: (task) => {
+                // Se ninguém mandou 'order' explicitamente, joga a tarefa pro
+                // "fim da fila" usando o timestamp atual — sempre crescente,
+                // sem precisar de uma query extra pra achar o maior valor.
+                if (task.order == null || task.order === 0) {
+                    task.order = Date.now();
+                }
+            },
+        },
     }
 )
 
