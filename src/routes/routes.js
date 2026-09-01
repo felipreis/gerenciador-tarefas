@@ -5,6 +5,7 @@ import authToken from '../middleware/authToken.js';
 import ProjectController from '../controller/ProjectController.js';
 import TaskController from '../controller/TaskController.js'
 import DashboardController from '../controller/DashboardController.js';
+import RefreshTokenController from '../controller/RefreshTokenController.js';
 
 const router = express.Router();
 
@@ -513,6 +514,8 @@ router.delete('/tasks/:taskId', authToken, TaskController.deleteTask)
  *         description: Problema no servidor
  */
 router.get('/dashboard',authToken, DashboardController.dashView)
+
+router.post('/auth/refresh',RefreshTokenController.refresh)
 
 
 
