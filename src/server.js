@@ -12,7 +12,7 @@ async function startServer(){
         await sequelize.authenticate();
         console.log('Connection has been established successfully.');
         await User.sync();
-        await Project.sync();
+        await Project.sync({alter: true});
         await Task.sync();
         app.listen(PORT, () => {console.log(`Server online at port ${PORT}`)})
     } catch (error) {

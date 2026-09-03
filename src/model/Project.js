@@ -19,6 +19,10 @@ const Project = sequelize.define(
       type: DataTypes.STRING,
       // allowNull defaults to true
     },
+    color: {
+    type: DataTypes.STRING(7),
+    defaultValue: "#ff7a1f"
+  },
   },
 
 );
