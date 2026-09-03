@@ -1,4 +1,5 @@
 import ProjectRepository from "../repositoires/ProjectRepository.js"
+import AppError from "../model/AppError.js";
 
 async function create(payload,userId){
     const project = {...payload, userId: userId}
@@ -14,8 +15,8 @@ async function getProjectById(userId,projectId){
     
     const project = await ProjectRepository.getProjectById(projectId);
 
-    if(!project){ throw new Error("Projeto não encontrado"); }
-    if(project.userId !== userId){ throw new Error("Não é possível acessar esse projeto"); }
+    if(!project){ throw new AppError("Projeto não encontrado",404); }
+    if(project.userId !== userId){ throw new AppError("Não é possível acessar esse projeto",403); }
 
     
     return project;
@@ -25,8 +26,8 @@ async function getProjectById(userId,projectId){
 async function updateProject(userId,id,body){
     //verificar se o projeto existe e se é do usuário logado
     const project = await ProjectRepository.getProjectById(id);
-    if(!project){ throw new Error("Projeto não encontrado"); }
-    if(project.userId !== userId){ throw new Error("Não é possível acessar esse projeto"); }
+    if(!project){ throw new AppError("Projeto não encontrado",404); }
+    if(project.userId !== userId){ throw new AppError("Não é possível acessar esse projeto",403); }
     
     return await ProjectRepository.updateProject(id,body)
 }
@@ -34,8 +35,8 @@ async function updateProject(userId,id,body){
 async function deleteProjects(userId,id){
     //verificar se o projeto existe e se é do usuario logado antes de excluir
     const project = await ProjectRepository.getProjectById(id);
-    if(!project){ throw new Error("Projeto não encontrado"); }
-    if(project.userId !== userId){ throw new Error("Não é possível acessar esse projeto"); }
+    if(!project){ throw new AppError("Projeto não encontrado",404); }
+    if(project.userId !== userId){ throw new AppError("Não é possível acessar esse projeto",403); }
     
     return await ProjectRepository.deleteProjects(id)
 }

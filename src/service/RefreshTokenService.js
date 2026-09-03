@@ -1,10 +1,12 @@
 import refreshToken from "../utils/refreshToken.js";
 import jwt from 'jsonwebtoken'
+import AppError from "../model/AppError.js";
+
 
 async function refresh(token){
 
     if (!token) {
-        throw new Error ("Token required");
+        throw new AppError("Token required",401);
     }
 
     token = token.replace("Bearer ", "");
@@ -12,7 +14,7 @@ async function refresh(token){
     
     const userId =  refreshToken.getUserIdByToken(token);
     if(!userId) {
-        throw new Error ("Token Inválido");
+        throw new AppError("Token Inválido",401);
     }
 
     return  jwt.sign({id: userId}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRES_IN})

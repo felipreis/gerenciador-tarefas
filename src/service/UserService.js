@@ -1,5 +1,7 @@
+import AppError from '../model/AppError.js';
 import UserRepository from '../repositoires/UserRepository.js'
 import bcrypt from 'bcryptjs';
+
 
 
 async function getAll(){
@@ -7,7 +9,9 @@ async function getAll(){
 }
 
 async function getById(id){
-    return await UserRepository.getById(id);
+    const user = await UserRepository.getById(id);
+    if(!user){throw new AppError("Usuário não encontrado", 404)}
+    return user;
 }
 
 async function create(body){
@@ -17,7 +21,9 @@ async function create(body){
 }
 
 async function getByEmail(email){
-    return await UserRepository.getByEmail(email);
+    const user = await UserRepository.getByEmail(email);
+    if(!user){throw new AppError("Usuário não encontrado", 404);}
+    return user;
 }
 
 

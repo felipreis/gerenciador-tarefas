@@ -2,25 +2,19 @@ import TaskService from '../service/TaskService.js'
 import responseHttp from '../httpResponse/response.js';
 
 
-async function create(req,res){
+async function create(req,res,next){
     try {
         const body = req.body;
         const userId   = req.user.id;
         const retorno = await TaskService.create(body,userId);
         responseHttp(retorno,res);      
     } catch (error) {
-        if(error.message === 'Projeto não encontrado'){
-            return res.status(404).json({message: error.message})
-        }
-        if(error.message === 'Não é possível criar tarefa'){
-            return res.status(403).json({message: error.message})
-        }
-        return res.status(500).json({message: error.message})
+       next(error)
     }
 
 }
 
-async function getAllTask(req,res){
+async function getAllTask(req,res,next){
     try {
         const userId = req.user.id;
         const {projectId} = req.params;
@@ -28,36 +22,23 @@ async function getAllTask(req,res){
         const retorno = await TaskService.getAllTask(userId,projectId,{ status, priority, search, page, limit });
         responseHttp(retorno,res);        
     } catch (error) {
-        if(error.message === 'Projeto não encontrado'){
-            return res.status(404).json({message: error.message})
-        }
-        if(error.message === 'Não é possível acessar tarefa'){
-            return res.status(403).json({message:error.message})
-        }
-
-        return res.status(500).json({message:error.message})
+       next(error)
     }
 
 }
 
-async function getTaskById(req,res){
+async function getTaskById(req,res,next){
     try {
         const {taskId} = req.params;
         const userId = req.user.id;
         const retorno = await TaskService.getTaskById(userId,taskId);
         responseHttp(retorno,res)
     } catch (error) {
-        if(error.message === 'Projeto não encontrado' || error.message === 'Tarefa não encontrada'){
-            return res.status(404).json({message: error.message})
-        }
-        if(error.message === 'Não é possível acessar tarefa'){
-            return res.status(403).json({message: error.message})  
-        }
-        return res.status(500).json({message: error.message})
+       next(error)
     }   
 }
 
-async function updateTask(req,res){
+async function updateTask(req,res,next){
     try {
         const {taskId} = req.params;
         const userId = req.user.id;
@@ -65,34 +46,22 @@ async function updateTask(req,res){
         const retorno = await TaskService.updateTask(userId,taskId,body);
         responseHttp(retorno,res) 
     } catch (error) {
-        if(error.message === 'Projeto não encontrado' || error.message === 'Tarefa não encontrada'){
-            return res.status(404).json({message: error.message})
-        }
-        if(error.message === 'Não é possível alterar a tarefa'){
-            return res.status(403).json({message: error.message})  
-        }
-        return res.status(500).json({message: error.message})       
+       next(error)       
     }
 }
 
-async function deleteTask(req,res){
+async function deleteTask(req,res,next){
     try {
         const {taskId} = req.params;
         const userId = req.user.id;
         const retorno = await TaskService.deleteTask(userId,taskId);
         responseHttp(retorno,res);
     } catch (error) {
-        if(error.message === 'Projeto não encontrado' || error.message === 'Tarefa não encontrada'){
-            return res.status(404).json({message: error.message})
-        }
-        if(error.message === 'Não é possível deletar a tarefa'){
-            return res.status(403).json({message: error.message})  
-        }
-        return res.status(500).json({message: error.message})
+       next(error)
     }
 }
 
-async function getWeekView(req,res){
+async function getWeekView(req,res,next){
     try {
         const {date} = req.query;
         const userId = req.user.id;
@@ -100,7 +69,7 @@ async function getWeekView(req,res){
         responseHttp(retorno,res)
     } catch (error) {
         
-        return res.status(500).json({message:error.message})
+        next(error)
         
     }
 }

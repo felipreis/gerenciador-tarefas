@@ -1,3 +1,5 @@
+
+
 function responseHttp(data,res){
     if(!data){
         res.status(400).json({ message: 'problemas na requisição'})
